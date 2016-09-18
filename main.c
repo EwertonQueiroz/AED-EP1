@@ -9,14 +9,15 @@ Atividade: EP1
 #include <stdio.h>
 #include <stdlib.h>
 
-int aux[50];
+int aux[100];
 
 typedef struct {
-    int x;
-    int y;
+    int x[40];
+    int y[40];
 } Tponto;
 
 int z = 0; // A variavel global z controla o tamanho do vetor.
+int tamanho;
 
 /**
 Esta função realiza a leitura do arquivo que contém as altitudes da pista.
@@ -31,23 +32,24 @@ void ler_arquivo (char url[]) {
     fscanf (arquivo, "%d", &aux[z]);
 
     while (aux[z] != 0) {
-        z++;
-        fscanf (arquivo, "%d", &aux[z]);
+        fscanf (arquivo, "%d", &aux[++z]);
     }
 
     fclose (arquivo);
+
+    tamanho = aux[0];
 }
 
-void separar_vetores (int v[], Tponto pontos[]) {
+void separar_vetores (int v[], Tponto *pontos) {
     int i, j;
 
     j = 1;
-    for (i = 0; i < v[0]; i++) {
-        pontos[i].x = v[j++];
+    for (i = 0; i < tamanho; i++) {
+        pontos -> x[i] = v[j++];
     }
 
-    for (i = 0; i < v[0]; i++) {
-        pontos[i].y = v[j++];
+    for (i = 0; i < tamanho; i++) {
+        pontos -> y[i] = v[j++];
     }
 }
 
@@ -71,27 +73,29 @@ void ordenar_selecao (int v[], int inicio, int tamanho) {
 }
 
 // Esta função realiza a impressão dos pontos.
-void imprimir_vetor (int v[], int inicio, int tamanho) {
+void imprimir_vetor (Tponto pontos) {
     int a;
-
-    printf ("%d ", inicio);
-
-    for (a = inicio; a <= tamanho; a++) {
-        printf ("%d ", v[a]);
+    for (a = 0; a < tamanho; a++) {
+        printf ("%d ", pontos.x[a]);
+    }
+    printf("\n");
+    for (a = 0; a < tamanho; a++) {
+        printf ("%d ", pontos.y[a]);
     }
 
     printf ("\n\n");
 }
 
-int main()
-{
+int main () {
+    Tponto ponto;
+
     // Mudar o nome do arquivo
     char url[] = "trembala.dat";
     ler_arquivo (url);
 
-    Tponto ponto[z];
+    separar_vetores (aux, &ponto);
 
-    separar_vetores(aux, ponto);
+//    ordenar_selecao(ponto.x, 0, tamanho);
 
-    imprimir_vetor(ponto, 0, z);
+    imprimir_vetor (ponto);
 }
